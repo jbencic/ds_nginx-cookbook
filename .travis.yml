@@ -1,0 +1,44 @@
+language: ruby
+rvm:
+- 2.2
+cache:
+  directories:
+  - "$HOME/.berkshelf"
+addons:
+  apt:
+    sources:
+    - chef-stable-precise
+    packages:
+    - chefdk
+branches:
+  only:
+  - master
+before_install:
+- openssl aes-256-cbc -K $encrypted_4585f9f825ae_key -iv $encrypted_4585f9f825ae_iv
+  -in secrets.tar.enc -out secrets.tar -d
+- tar -xvf secrets.tar -C ~
+- echo 'node_name "ds_bot"' >> ~/.chef/knife.rb
+- echo 'client_key "~/.chef/ds_bot.pem"' >> ~/.chef/knife.rb
+- echo 'chef_server_url "https://chef.darksky.net/organizations/darksky"' >> ~/.chef/knife.rb
+- chmod 600 ~/.chef/knife.rb ~/.chef/ds_bot.pem ~/.ssh/ds_travis_ci
+- eval "$(chef shell-init bash)"
+- chef --version
+install:
+- chef gem install kitchen-sync
+script: delivery local lint
+jobs:
+  include:
+  - stage: test
+    script: delivery local syntax
+  - stage: unit
+    script: delivery local unit
+  - stage: integration
+    script: delivery local provision && delivery local deploy && delivery local smoke;
+      delivery local cleanup
+notifications:
+  slack:
+    secure: JaoGIEW1am32xMAOpFfowvb2cNiX+t0g9e4cGA/PV7+mQqBMgxeNay2/ha+sf2Vg5snNuuNEBmh3dGv/6+CRORVtZRBa9rLWFdmzs+WX4b6moU1ymAHuarn4aFVsVJUnt2ROuq6E3ZiSzl3MPH1Kr96zJ0I4MAkQwtAnnMV08nmii+FpPO1KYAA1z73nL03oqMcEiHoQ6Uek4x0WuQJGHtPn7QzJ8O9XvFGmTY+GD/DN0chke72NWh3fPMNLUty9WZ8ZC3mZt9iZ9tA7mM0vtvOkHpAjta7478j4/+6GJKWw/XcLeXS4JS8Q+sXQkmGmyX1cJe7g6oCDwv3XzfyR61Zud4xvWXaNZCkychaMcDlseajJ3bliid09dHWFgOW00Jq2ZDYhT+TJJiT0MUNx13c3YfyOZJEOlIWDZi7+ih336lt39IwCSgeV7tHQCK1sHtBWnS6EmlrSOybs++VucSKkmLMryYvSs96Mv1OOA7WJyw2OFQD0N9hXQFJc328/Mv8vitCQHKgi+oJEmgwcKgaxt4BAbJqEztPNh9Qsbem461MYeM+YTKpQ7ZHngBzf9u1DZavrLzqASEBznUalq5WzgYFpy6Ttmpdh8ytsLa0xfI+lWUVeoHGvfBqu8B1zRKmTnX3zg8bjZY76MmG0sXc6jqfC/c8j4Gcw0x/9DH4=
+env:
+  global:
+  - secure: SHtoFRNw8LMpdnKKa+l0Lo2t61sqrEEfWQXT7qLPbP6tDQEOFAppk8w5OUpgjSObxpVx6CodUcE0p4ZSeCQjM56CJ6uvY5VoC96mdEtOTpNmW1hoREO17NdLfY2/AZj64cArtvY7wB/0EY3cD+uoda+ZPUgIjeUPTy03Fd8Z8dDrJ85tJHpHZ6r8emjFFrcobL5DyoV9p12hkXQWnm+YfnDyNL90jt9LlUYck82nW2YvcfQQJg8zvKn1Sl8lWuAmGXL1Id97FhpJsRWgwmZlM2Sj2gBxc8IW4UHulMndwMXJUN0+RjmoRwY6wDL/Tq+aSTi8jZZ8lSiVEPLncWmR//dNX5FknQ/b2WmsCbkzBCSWKv9CQCA/zpbk7z+pEB3gWg1EIENiLaeh/gOCupuGIQujUSeA/5pnwVTje/KS5U2XmnI73H1QC+C+ISeObINlovUnNwbhTjOu8CY2by1kEBVtplrv/Q8V1hUkGdDDzE6e2+ddCE6N8hLCd6oIM+dKiGn+UvP4F+EWv4gRGv5J+VFtHCEM/pabGQUoTlNsVOZ8VWRUw53XOg7+hMd9gJvAi70yYKdGe+/0itUoe9iu6lf2DAoQI0EjLMeYoJCGuFxY2SqWWkDtivCjD8+TNaXFa8iMkDenRNaH8ysRW74Kb3YOzV9Lrs5BGSpH2ztBSZA=
+  - secure: Tl7Su7l40ilXUWmu2gaX4wf0PGYwmOOY9lizV2Dv9iJQ0l7YPZksYUvliwqgCvVKef9sA82Ecp8+vwzX09feoiNAI1dYi8tMew7vNTmupZJ3uv0l0w6OYePZS95VDfw2JtYq+n69/9uQz4sEGcThS0VahmHcMSvVlAddWLTM0gsPNB/AEkbpq1p3BrFhH0+vMYBq60uC7/yMKTjBSW/n49OpNh+iisiShmaT9KSk0yqWyE/f0cimf6S3H2PA3DLNI4b3ZNbpCGdsiC18vyc/LBSiiHZAMApvAsQmTKZSGW+o2+4MYNbTNf9Lxrg6xeNoRHQ7GD3ziStmpH/pUHraUolTmcuq3xFn5Tu82GVDxgz2oItoipWQRxP3MqsS0EvfQuQqpAWhCkOZ33htLya5cwuGIB16DegF212GixK4NUExH+d1W0naoz4SK5wkPVO5KD+Cc59TRnRGgrI+Olawzpf+PO1sunbO1aIH1LRmtZe7yXUT4+KBymqLi08LLS32kpSW7GJU8P9ZuMIoEnPRZUK4R3P6JUxa2PidfNAHPg3V8C62yysG4kWJKnUm04cI+o4BJPDYgZnUY9rEovvRxOogErcE38w1BPCbrRbHTzDVtb2tyVgyZ8FlDSQ2UIxYj75SK/YcmpjdKZyYr1wupfpVnJIw6kzbEJ+vJyonHu8=
