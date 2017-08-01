@@ -45,7 +45,7 @@ jobs:
     script: echo "Uploading to Chef Server..."
     deploy:
       provider: script
-      script: berks update && berks upload
+      script: berks && berks upload
       skip_cleanup: true
       on:
         tags: true
