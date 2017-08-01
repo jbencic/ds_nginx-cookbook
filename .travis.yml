@@ -35,6 +35,23 @@ jobs:
   - stage: integration
     script: delivery local provision && delivery local deploy && delivery local smoke;
       delivery local cleanup
+  - stage: GitHub Release
+    script: echo "Deploying to GitHub releases..."
+    deploy:
+      provider: releases
+      api_key:
+        secure: dcNuDPgr7thLw6fzHZ2DhyyF3Jr3It1uQ2S1PeEvQzMLG9i3/y3TVpRXxp4NV87z+RCs9Kov+atJYi6W8vRw6jUvUM56G7/3ydCx0/dBwBxuJq0VUB55p7O6nEE5UFe8S1pUV54x2EIQ9HDv2vGsC0ZnDVekS12z8O70EOywWAv4LTFN80p6TrC0+kBfI3GBkaP9dj1pshmVpoDVGTiTh4M8GiXwMk1GPeAizOpchXs19MledrdV3NNk73gRcRjMbuKsQyO9H+BjiEoUl8O5XVygxpgmzwiJY1lcdte/cIWn9XW/wJDD+zXDHf3779PvUjBMmQf6dgpg5rj0WRh2W8BqyukqkQSxGa3484oPSxqwY8MPQpLPPShDQV6Hy95FuqjoxU3z/U8Lsc6i9d+A0/8WSX0T8wntD+5689HOOCpmrJth7AXPE3AFM9SdDSkzY8HgnfSWkFvxcUCbDwNHJN+1A6OTPnpSOHR3kubIDMIwn/LZJ7OxM6CaSTffnJnvj918XVmj9oNqQQ1MecsQAGHc/vS2mxahnbUkOqzHvfBYvnL9he6/eQWubHwx8+EcJyAgP4sqx/9Q3AA0aFKgWFJKV/rNFxh9WiF0RIRA3azxP/BSJvLcRJRfvkY6v0jQot8IQagV517n09ILG/Cs/cSo2kKy6oosGkdeooWDFlg=
+      skip_cleanup: true
+      on:
+        tags: true
+  - stage: Publish to Chef Server
+    script: echo "Uploading to Chef Server..."
+    deploy:
+      provider: script
+      script: berks update && berks upload
+      skip_cleanup: true
+      on:
+        tags: true
 notifications:
   slack:
     secure: JaoGIEW1am32xMAOpFfowvb2cNiX+t0g9e4cGA/PV7+mQqBMgxeNay2/ha+sf2Vg5snNuuNEBmh3dGv/6+CRORVtZRBa9rLWFdmzs+WX4b6moU1ymAHuarn4aFVsVJUnt2ROuq6E3ZiSzl3MPH1Kr96zJ0I4MAkQwtAnnMV08nmii+FpPO1KYAA1z73nL03oqMcEiHoQ6Uek4x0WuQJGHtPn7QzJ8O9XvFGmTY+GD/DN0chke72NWh3fPMNLUty9WZ8ZC3mZt9iZ9tA7mM0vtvOkHpAjta7478j4/+6GJKWw/XcLeXS4JS8Q+sXQkmGmyX1cJe7g6oCDwv3XzfyR61Zud4xvWXaNZCkychaMcDlseajJ3bliid09dHWFgOW00Jq2ZDYhT+TJJiT0MUNx13c3YfyOZJEOlIWDZi7+ih336lt39IwCSgeV7tHQCK1sHtBWnS6EmlrSOybs++VucSKkmLMryYvSs96Mv1OOA7WJyw2OFQD0N9hXQFJc328/Mv8vitCQHKgi+oJEmgwcKgaxt4BAbJqEztPNh9Qsbem461MYeM+YTKpQ7ZHngBzf9u1DZavrLzqASEBznUalq5WzgYFpy6Ttmpdh8ytsLa0xfI+lWUVeoHGvfBqu8B1zRKmTnX3zg8bjZY76MmG0sXc6jqfC/c8j4Gcw0x/9DH4=
