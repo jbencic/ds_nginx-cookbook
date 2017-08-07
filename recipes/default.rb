@@ -21,3 +21,6 @@ directory node['ds_nginx']['cache_dir'] do
   mode      '700'
   recursive true
 end
+
+# Provides consistent handling of browser caching for static assets
+cookbook_file '/etc/nginx/conf.d/h5bp.conf'
