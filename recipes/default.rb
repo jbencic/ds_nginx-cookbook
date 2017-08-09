@@ -23,4 +23,5 @@ directory node['ds_nginx']['cache_dir'] do
 end
 
 # Provides consistent handling of browser caching for static assets
-cookbook_file '/etc/nginx/conf.d/h5bp.conf'
+# Should be included within a server {} block in a site config
+cookbook_file '/etc/nginx/h5bp.conf'
