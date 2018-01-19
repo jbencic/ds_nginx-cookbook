@@ -24,9 +24,10 @@ before_install:
 - chef --version
 install:
 - chef gem install kitchen-sync
-script: delivery local lint
 jobs:
   include:
+  - stage: lint
+    script: delivery local lint
   - stage: test
     script: delivery local syntax
   - stage: unit
