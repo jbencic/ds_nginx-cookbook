@@ -23,7 +23,7 @@ before_install:
 - eval "$(chef shell-init bash)"
 - chef --version
 install:
-- chef gem install kitchen-sync
+- chef gem install kitchen-dokken
 jobs:
   include:
   - stage: lint
