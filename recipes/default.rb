@@ -4,10 +4,10 @@
 #
 # Copyright:: 2017, The Dark Sky Company, LLC, All Rights Reserved.
 
-include_recipe 'chef_nginx'
-include_recipe 'chef_nginx::http_stub_status_module'
+include_recipe 'nginx'
+include_recipe 'nginx::http_stub_status_module'
 
-# Override the chef_nginx status template with our own
+# Override the nginx status template with our own
 begin
   r = resources template: 'nginx_status'
   r.source   'nginx_status.erb'

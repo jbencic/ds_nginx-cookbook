@@ -18,8 +18,8 @@ describe 'ds_nginx::default' do
     end
 
     it 'installs & configures NGINX' do
-      expect(chef_run).to include_recipe 'chef_nginx'
-      expect(chef_run).to include_recipe 'chef_nginx::http_stub_status_module'
+      expect(chef_run).to include_recipe 'nginx'
+      expect(chef_run).to include_recipe 'nginx::http_stub_status_module'
     end
 
     it 'creates a directory to store NGINX caches' do

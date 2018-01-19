@@ -10,4 +10,4 @@ chef_version     '>= 12.11' if respond_to?(:chef_version)
 issues_url 'https://github.com/darkskyapp/ds_nginx-cookbook/issues'
 source_url 'https://github.com/darkskyapp/ds_nginx-cookbook'
 
-depends 'chef_nginx', '~> 6.0'
+depends 'nginx', '~> 7.0'
