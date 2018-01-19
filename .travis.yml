@@ -10,6 +10,8 @@ addons:
     - chef-stable-precise
     packages:
     - chefdk
+services:
+- docker
 before_install:
 - openssl aes-256-cbc -K $encrypted_4585f9f825ae_key -iv $encrypted_4585f9f825ae_iv
   -in secrets.tar.enc -out secrets.tar -d
